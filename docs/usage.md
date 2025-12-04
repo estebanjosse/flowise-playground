@@ -1,0 +1,216 @@
+# Usage Guide
+
+This guide covers how to use the FlowiseAI Docker environment for building and running LLM workflows.
+
+## Prerequisites
+
+Before you begin, ensure you have:
+
+- [Docker](https://docs.docker.com/get-docker/) (version 20.10 or later)
+- [Docker Compose](https://docs.docker.com/compose/install/) (version 2.0 or later)
+- At least 4GB of available RAM
+- Internet connection (for pulling Docker images)
+
+## Starting the Environment
+
+### Basic Setup (Flowise Only)
+
+1. **Copy the environment file:**
+   ```bash
+   cp .env.example .env
+   ```
+
+2. **Start Flowise:**
+   ```bash
+   docker compose up -d
+   ```
+
+3. **Access Flowise UI:**
+   Open your browser and navigate to [http://localhost:3000](http://localhost:3000)
+
+### With Qdrant (Vector Database)
+
+For RAG workflows that require vector storage:
+
+```bash
+docker compose --profile qdrant up -d
+```
+
+This starts both Flowise and Qdrant.
+
+## Stopping the Environment
+
+### Stop all services:
+```bash
+docker compose --profile qdrant down
+```
+
+### Stop and remove volumes (⚠️ deletes all data):
+```bash
+docker compose --profile qdrant down -v
+```
+
+## Viewing Logs
+
+### All services:
+```bash
+docker compose logs -f
+```
+
+### Specific service:
+```bash
+docker compose logs -f flowise
+docker compose logs -f qdrant
+```
+
+## Configuration
+
+### Enabling Authentication
+
+For production or shared environments, enable authentication by editing your `.env` file:
+
+```env
+FLOWISE_USERNAME=admin
+FLOWISE_PASSWORD=your-secure-password
+```
+
+Then restart Flowise:
+```bash
+docker compose restart flowise
+```
+
+### Changing Ports
+
+If the default ports conflict with other services, modify your `.env` file:
+
+```env
+FLOWISE_PORT=8080
+QDRANT_PORT=6335
+QDRANT_GRPC_PORT=6336
+```
+
+## Working with Flowise
+
+### Creating Your First Flow
+
+1. Open Flowise UI at [http://localhost:3000](http://localhost:3000)
+2. Click **"Add New"** to create a new chatflow
+3. Drag nodes from the left sidebar to the canvas
+4. Connect nodes by dragging from output to input handles
+5. Configure each node by clicking on it
+6. Click **"Save"** to save your flow
+7. Use the **"Chat"** button to test your flow
+
+### Connecting to Qdrant
+
+When creating a RAG workflow with Qdrant:
+
+1. Add a **Qdrant** vector store node to your flow
+2. Configure the connection:
+   - **Host:** `qdrant`
+   - **Port:** `6333`
+   - **Collection Name:** Choose a name for your vector collection
+3. Connect your embedding model and document loaders
+
+### Using the API
+
+Flowise provides a REST API for each flow. After saving a flow:
+
+1. Click on the flow to open it
+2. Click the **"API"** button in the toolbar
+3. Copy the API endpoint and use it in your applications:
+
+```bash
+curl -X POST http://localhost:3000/api/v1/prediction/{flow-id} \
+  -H "Content-Type: application/json" \
+  -d '{"question": "Your question here"}'
+```
+
+## Common Tasks
+
+### Updating Services
+
+Pull the latest images and restart:
+
+```bash
+docker compose pull
+docker compose --profile qdrant up -d
+```
+
+### Checking Service Health
+
+```bash
+docker compose ps
+```
+
+Healthy services show `(healthy)` in the STATUS column.
+
+### Debugging Issues
+
+1. **Check logs for errors:**
+   ```bash
+   docker compose logs flowise --tail 100
+   ```
+
+2. **Enable debug logging:**
+   Edit `.env`:
+   ```env
+   LOG_LEVEL=debug
+   ```
+   Then restart:
+   ```bash
+   docker compose restart flowise
+   ```
+
+3. **Access container shell:**
+   ```bash
+   docker compose exec flowise sh
+   ```
+
+## Backing Up Your Work
+
+### Export Flows
+
+1. In Flowise UI, open a flow
+2. Click the **"Settings"** (gear) icon
+3. Select **"Export"** to download the flow as JSON
+
+### Backup Volumes
+
+See the [Architecture documentation](architecture.md#volume-management) for volume backup commands.
+
+## Troubleshooting
+
+### Port Already in Use
+
+If you see "port is already allocated":
+
+1. Find what's using the port:
+   ```bash
+   lsof -i :3000
+   ```
+
+2. Either stop the conflicting service or change the port in `.env`
+
+### Container Won't Start
+
+Check the logs for errors:
+```bash
+docker compose logs flowise
+```
+
+Common issues:
+- Insufficient memory
+- Volume permission issues
+- Network conflicts
+
+### Qdrant Connection Failed
+
+Ensure Qdrant is running and use the correct hostname:
+- **Inside Docker:** Use `qdrant` as the host
+- **Outside Docker:** Use `localhost` with the mapped port
+
+## Next Steps
+
+- Read [Sample Flows](sample-flows.md) for pre-built workflow examples
+- Review [Architecture](architecture.md) for a deeper understanding of the setup

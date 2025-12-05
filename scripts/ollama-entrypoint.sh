@@ -13,8 +13,15 @@ until /bin/ollama list >/dev/null 2>&1; do
   sleep 1
 done
 
-for model in ${OLLAMA_AUTO_PULL_MODELS}; do
-  if ! /bin/ollama show "$model" >/dev/null 2>&1; then
+models=${OLLAMA_AUTO_PULL_MODELS:-gemma3:1b}
+models=$(printf '%s' "$models" | tr ',' ' ')
+
+for model in $models; do
+  echo "[ollama-entrypoint] checking model '$model'"
+  if /bin/ollama show "$model" >/dev/null 2>&1; then
+    echo "[ollama-entrypoint] model '$model' already present"
+  else
+    echo "[ollama-entrypoint] pulling model '$model'"
     /bin/ollama pull "$model"
   fi
 done

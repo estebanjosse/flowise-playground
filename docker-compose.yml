@@ -1,0 +1,53 @@
+services:
+  flowise:
+    image: flowiseai/flowise:latest
+    container_name: flowise
+    restart: unless-stopped
+    ports:
+      - "${FLOWISE_PORT:-3000}:3000"
+    environment:
+      - DATABASE_PATH=/root/.flowise/flowise.db
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      - NODE_TLS_REJECT_UNAUTHORIZED=0
+      - SHOW_COMMUNITY_NODES=true
+    volumes:
+      - flowise_data:/root/.flowise
+    networks:
+      - flowise-network
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # Optional: Qdrant vector database for RAG workflows
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: qdrant
+    restart: unless-stopped
+    profiles:
+      - qdrant
+    ports:
+      - "${QDRANT_PORT:-6333}:6333"
+      - "${QDRANT_GRPC_PORT:-6334}:6334"
+    volumes:
+      - qdrant_data:/qdrant/storage
+    networks:
+      - flowise-network
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:6333/readyz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
+volumes:
+  flowise_data:
+    driver: local
+  qdrant_data:
+    driver: local
+
+networks:
+  flowise-network:
+    driver: bridge

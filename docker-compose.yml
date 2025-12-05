@@ -42,10 +42,29 @@ services:
       retries: 3
       start_period: 5s
 
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    restart: unless-stopped
+    networks:
+      - flowise-network
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+      - ./scripts/ollama-entrypoint.sh:/usr/local/bin/ollama-entrypoint.sh:ro
+    environment:
+      - OLLAMA_AUTO_PULL_MODELS=${OLLAMA_AUTO_PULL_MODELS:-gemma3:1b}
+    entrypoint:
+      - /bin/sh
+      - /usr/local/bin/ollama-entrypoint.sh
+
 volumes:
   flowise_data:
     driver: local
   qdrant_data:
+    driver: local
+  ollama-data:
     driver: local
 
 networks:

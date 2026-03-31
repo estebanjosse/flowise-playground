@@ -1,8 +1,10 @@
 services:
   flowise:
-    image: flowiseai/flowise:latest
+    image: flowiseai/flowise:3.1.1
     container_name: flowise
     restart: unless-stopped
+    profiles:
+      - flowise
     ports:
       - "${FLOWISE_PORT:-3000}:3000"
     environment:
@@ -23,7 +25,7 @@ services:
 
   # Optional: Qdrant vector database for RAG workflows
   qdrant:
-    image: qdrant/qdrant:latest
+    image: qdrant/qdrant:v1.16.2
     container_name: qdrant
     restart: unless-stopped
     profiles:
@@ -43,9 +45,11 @@ services:
       start_period: 5s
 
   ollama:
-    image: ollama/ollama:latest
+    image: ollama/ollama:0.13.3
     container_name: ollama
     restart: unless-stopped
+    profiles:
+      - ollama
     networks:
       - flowise-network
     ports:
@@ -54,10 +58,16 @@ services:
       - ollama-data:/root/.ollama
       - ./scripts/ollama-entrypoint.sh:/usr/local/bin/ollama-entrypoint.sh:ro
     environment:
-      - OLLAMA_AUTO_PULL_MODELS=${OLLAMA_AUTO_PULL_MODELS:-gemma3:1b}
+      - OLLAMA_AUTO_PULL_MODELS=${OLLAMA_AUTO_PULL_MODELS:-qwen2.5:0.5b}
     entrypoint:
       - /bin/sh
       - /usr/local/bin/ollama-entrypoint.sh
+    healthcheck:
+      test: ["CMD", "/bin/ollama", "list"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
 
 volumes:
   flowise_data:

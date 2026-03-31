@@ -54,6 +54,7 @@ Qdrant will be available at `localhost:6333`. When configuring Qdrant in Flowise
 | [Usage Guide](docs/usage.md) | Detailed instructions for using the environment |
 | [Architecture](docs/architecture.md) | Overview of components and how they interact |
 | [Sample Flows](docs/sample-flows.md) | Example workflows to get you started |
+| [Local Models and Comparison](docs/local-models.md) | How Ollama-based local models are started and how test results compare |
 
 ## 📁 Project Structure
 
@@ -63,6 +64,7 @@ flowise-playground/
 ├── .env.example          # Environment variables template
 ├── docs/
 │   ├── architecture.md   # System architecture overview
+│   ├── local-models.md   # Local Ollama usage and model comparison notes
 │   ├── usage.md          # Detailed usage instructions
 │   └── sample-flows.md   # Example workflow descriptions
 └── README.md             # This file
@@ -72,11 +74,22 @@ flowise-playground/
 
 | Command | Description |
 |---------|-------------|
-| `docker compose up -d` | Start Flowise |
-| `docker compose --profile qdrant up -d` | Start Flowise + Qdrant |
+| `docker compose --profile flowise up -d` | Start Flowise |
+| `docker compose --profile flowise --profile qdrant up -d` | Start Flowise + Qdrant |
+| `docker compose --profile flowise --profile ollama up -d` | Start Flowise + Ollama |
+| `docker compose --profile flowise --profile qdrant --profile ollama up -d` | Start Flowise + Qdrant + Ollama |
 | `docker compose down` | Stop all services |
 | `docker compose logs -f` | View logs |
 | `docker compose pull` | Update to latest images |
+
+## 🤖 Local Models
+
+See [Local Models and Comparison](docs/local-models.md) for:
+
+- how the Ollama service starts in this project
+- how to auto-pull local models
+- how to connect Flowise to Ollama
+- the current MCP tool-calling comparison notes
 
 ## 🤝 Contributing
 

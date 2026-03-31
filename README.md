@@ -25,6 +25,8 @@ cp .env.example .env
 
 ### 2. Start Flowise
 
+Start the full local stack:
+
 ```bash
 docker compose up -d
 ```
@@ -37,19 +39,19 @@ Navigate to [http://localhost:3000](http://localhost:3000) in your browser.
 
 **That's it!** You're ready to build LLM workflows. 🎉
 
-## 🗄️ Adding Qdrant (Vector Database)
+## 🗄️ Included Services
 
-For RAG (Retrieval-Augmented Generation) workflows:
+The default stack started by `docker compose up -d` includes:
 
-```bash
-docker compose up -d
-```
+- **Flowise** on `http://localhost:3000`
+- **Qdrant** on `localhost:6333` for RAG workflows
+- **Ollama** on `http://localhost:11434` for local models
 
 Qdrant will be available at `localhost:6333`. When configuring Qdrant in Flowise, use:
 - **Host:** `qdrant`
 - **Port:** `6333`
 
-If you want to customize which services start by default, edit `COMPOSE_PROFILES` in your `.env` file.
+If you want a smaller default startup set, edit `COMPOSE_PROFILES` in your `.env` file.
 
 ## 📖 Documentation
 
@@ -78,13 +80,11 @@ flowise-playground/
 
 | Command | Description |
 |---------|-------------|
-| `docker compose up -d` | Start all services enabled by `COMPOSE_PROFILES` |
-| Edit `COMPOSE_PROFILES` in `.env` | Change which services start by default |
-| `docker compose --profile flowise --profile qdrant up -d` | Start with explicit profiles when needed |
-| `docker compose --profile flowise --profile ollama up -d` | Start Flowise + Ollama explicitly |
+| `docker compose up -d` | Start the default full stack |
 | `docker compose down` | Stop all services |
 | `docker compose logs -f` | View logs |
 | `docker compose pull` | Update to latest images |
+| Edit `COMPOSE_PROFILES` in `.env` | Change which services start by default |
 
 ## 🤖 Local Models
 
@@ -94,6 +94,8 @@ See [Local Models and Comparison](docs/local-models.md) for:
 - how to auto-pull local models
 - how to connect Flowise to Ollama
 - the current MCP tool-calling comparison notes
+
+If you need explicit profile-based startup commands, see [docs/usage.md](docs/usage.md).
 
 ## 🤝 Contributing
 

@@ -20,7 +20,7 @@ Before you begin, ensure you have:
    cp .env.example .env
    ```
 
-2. **Start the stack:**
+2. **Start the full stack:**
    ```bash
    docker compose up -d
    ```
@@ -30,7 +30,15 @@ Before you begin, ensure you have:
 3. **Access Flowise UI:**
    Open your browser and navigate to [http://localhost:3000](http://localhost:3000)
 
-### Customizing Which Services Start
+### Included by Default
+
+With the default `.env` configuration, `docker compose up -d` starts:
+
+- **Flowise** on `http://localhost:3000`
+- **Qdrant** on `localhost:6333`
+- **Ollama** on `http://localhost:11434`
+
+### Customizing the Default Startup Set
 
 Use `COMPOSE_PROFILES` in your `.env` file to control the default startup set.
 
@@ -48,6 +56,8 @@ After updating `.env`, run:
 ```bash
 docker compose up -d
 ```
+
+If you need explicit profile-based startup for a one-off run, you can still use `docker compose --profile ... up -d`, but the default workflow in this repository is to manage startup through `COMPOSE_PROFILES`.
 
 ## Stopping the Environment
 
@@ -72,6 +82,7 @@ docker compose logs -f
 ```bash
 docker compose logs -f flowise
 docker compose logs -f qdrant
+docker compose logs -f ollama
 ```
 
 ## Configuration
@@ -142,6 +153,8 @@ docker compose ps
 
 Healthy services show `(healthy)` in the STATUS column.
 
+With the default full stack, you should typically see `flowise`, `qdrant`, and `ollama`.
+
 ### Debugging Issues
 
 1. **Check logs for errors:**
@@ -206,6 +219,24 @@ Common issues:
 Ensure Qdrant is running and use the correct hostname:
 - **Inside Docker:** Use `qdrant` as the host
 - **Outside Docker:** Use `localhost` with the mapped port
+
+### Ollama Not Available
+
+If Flowise cannot reach Ollama:
+
+1. Confirm the service is running:
+   ```bash
+   docker compose ps
+   ```
+
+2. Check the Ollama logs:
+   ```bash
+   docker compose logs ollama --tail 100
+   ```
+
+3. Verify that `ollama` is included in `COMPOSE_PROFILES` inside your `.env` file
+
+4. In Flowise, use `http://ollama:11434` as the Ollama base URL
 
 ## Next Steps
 

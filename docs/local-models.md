@@ -25,13 +25,15 @@ docker compose --profile ollama up -d
 
 In this repository, `.env.example` enables `flowise`, `qdrant`, and `ollama` by default through `COMPOSE_PROFILES`. After copying `.env.example` to `.env`, a plain `docker compose up -d` will therefore start Ollama as part of the default stack unless you change `COMPOSE_PROFILES`.
 
-To run Flowise and Ollama together:
+If you want to run only a subset of the stack, you can either edit `COMPOSE_PROFILES` in `.env` or use explicit profile-based commands.
+
+To run Flowise and Ollama together explicitly:
 
 ```bash
 docker compose --profile flowise --profile ollama up -d
 ```
 
-To run Flowise, Ollama, and Qdrant together:
+To run Flowise, Ollama, and Qdrant together explicitly:
 
 ```bash
 docker compose --profile flowise --profile ollama --profile qdrant up -d
@@ -63,7 +65,13 @@ The entrypoint converts commas to spaces, then pulls each model one by one.
 
 ## Common Commands
 
-### Start Flowise with Ollama
+### Start the default full stack
+
+```bash
+docker compose up -d
+```
+
+### Start Flowise with Ollama explicitly
 
 ```bash
 docker compose --profile flowise --profile ollama up -d

@@ -17,11 +17,13 @@ This setup is useful for testing small local models without depending on a cloud
 
 ### Docker Compose Profile
 
-The `ollama` service is disabled by default and is started with the `ollama` profile:
+The `ollama` service belongs to the `ollama` Docker Compose profile:
 
 ```bash
 docker compose --profile ollama up -d
 ```
+
+In this repository, `.env.example` enables `flowise`, `qdrant`, and `ollama` by default through `COMPOSE_PROFILES`. After copying `.env.example` to `.env`, a plain `docker compose up -d` will therefore start Ollama as part of the default stack unless you change `COMPOSE_PROFILES`.
 
 To run Flowise and Ollama together:
 

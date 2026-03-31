@@ -29,6 +29,8 @@ cp .env.example .env
 docker compose up -d
 ```
 
+By default, the provided `.env.example` enables the `flowise`, `qdrant`, and `ollama` profiles through `COMPOSE_PROFILES`, so this command starts the full local stack.
+
 ### 3. Open the UI
 
 Navigate to [http://localhost:3000](http://localhost:3000) in your browser.
@@ -40,12 +42,14 @@ Navigate to [http://localhost:3000](http://localhost:3000) in your browser.
 For RAG (Retrieval-Augmented Generation) workflows:
 
 ```bash
-docker compose --profile qdrant up -d
+docker compose up -d
 ```
 
 Qdrant will be available at `localhost:6333`. When configuring Qdrant in Flowise, use:
 - **Host:** `qdrant`
 - **Port:** `6333`
+
+If you want to customize which services start by default, edit `COMPOSE_PROFILES` in your `.env` file.
 
 ## 📖 Documentation
 
@@ -74,10 +78,10 @@ flowise-playground/
 
 | Command | Description |
 |---------|-------------|
-| `docker compose --profile flowise up -d` | Start Flowise |
-| `docker compose --profile flowise --profile qdrant up -d` | Start Flowise + Qdrant |
-| `docker compose --profile flowise --profile ollama up -d` | Start Flowise + Ollama |
-| `docker compose --profile flowise --profile qdrant --profile ollama up -d` | Start Flowise + Qdrant + Ollama |
+| `docker compose up -d` | Start all services enabled by `COMPOSE_PROFILES` |
+| Edit `COMPOSE_PROFILES` in `.env` | Change which services start by default |
+| `docker compose --profile flowise --profile qdrant up -d` | Start with explicit profiles when needed |
+| `docker compose --profile flowise --profile ollama up -d` | Start Flowise + Ollama explicitly |
 | `docker compose down` | Stop all services |
 | `docker compose logs -f` | View logs |
 | `docker compose pull` | Update to latest images |

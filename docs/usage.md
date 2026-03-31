@@ -13,41 +13,52 @@ Before you begin, ensure you have:
 
 ## Starting the Environment
 
-### Basic Setup (Flowise Only)
+### Basic Setup
 
 1. **Copy the environment file:**
    ```bash
    cp .env.example .env
    ```
 
-2. **Start Flowise:**
+2. **Start the stack:**
    ```bash
    docker compose up -d
    ```
 
+   By default, `.env.example` sets `COMPOSE_PROFILES=flowise,qdrant,ollama`, so this command starts the full stack. To start fewer services, edit `COMPOSE_PROFILES` in your `.env` file.
+
 3. **Access Flowise UI:**
    Open your browser and navigate to [http://localhost:3000](http://localhost:3000)
 
-### With Qdrant (Vector Database)
+### Customizing Which Services Start
 
-For RAG workflows that require vector storage:
+Use `COMPOSE_PROFILES` in your `.env` file to control the default startup set.
 
-```bash
-docker compose --profile qdrant up -d
+Example values:
+
+```env
+COMPOSE_PROFILES=flowise
+COMPOSE_PROFILES=flowise,qdrant
+COMPOSE_PROFILES=flowise,ollama
+COMPOSE_PROFILES=flowise,qdrant,ollama
 ```
 
-This starts both Flowise and Qdrant.
+After updating `.env`, run:
+
+```bash
+docker compose up -d
+```
 
 ## Stopping the Environment
 
 ### Stop all services:
 ```bash
-docker compose --profile qdrant down
+docker compose down
 ```
 
 ### Stop and remove volumes (⚠️ deletes all data):
 ```bash
-docker compose --profile qdrant down -v
+docker compose down -v
 ```
 
 ## Viewing Logs
@@ -120,7 +131,7 @@ Pull the latest images and restart:
 
 ```bash
 docker compose pull
-docker compose --profile qdrant up -d
+docker compose up -d
 ```
 
 ### Checking Service Health

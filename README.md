@@ -25,9 +25,13 @@ cp .env.example .env
 
 ### 2. Start Flowise
 
+Start the full local stack:
+
 ```bash
 docker compose up -d
 ```
+
+By default, the provided `.env.example` enables the `flowise`, `qdrant`, and `ollama` profiles through `COMPOSE_PROFILES`, so this command starts the full local stack.
 
 ### 3. Open the UI
 
@@ -35,17 +39,19 @@ Navigate to [http://localhost:3000](http://localhost:3000) in your browser.
 
 **That's it!** You're ready to build LLM workflows. 🎉
 
-## 🗄️ Adding Qdrant (Vector Database)
+## 🗄️ Included Services
 
-For RAG (Retrieval-Augmented Generation) workflows:
+The default stack started by `docker compose up -d` includes:
 
-```bash
-docker compose --profile qdrant up -d
-```
+- **Flowise** on `http://localhost:3000`
+- **Qdrant** on `localhost:6333` for RAG workflows
+- **Ollama** on `http://localhost:11434` for local models
 
 Qdrant will be available at `localhost:6333`. When configuring Qdrant in Flowise, use:
 - **Host:** `qdrant`
 - **Port:** `6333`
+
+If you want a smaller default startup set, edit `COMPOSE_PROFILES` in your `.env` file.
 
 ## 📖 Documentation
 
@@ -54,6 +60,7 @@ Qdrant will be available at `localhost:6333`. When configuring Qdrant in Flowise
 | [Usage Guide](docs/usage.md) | Detailed instructions for using the environment |
 | [Architecture](docs/architecture.md) | Overview of components and how they interact |
 | [Sample Flows](docs/sample-flows.md) | Example workflows to get you started |
+| [Local Models and Comparison](docs/local-models.md) | How Ollama-based local models are started and how test results compare |
 
 ## 📁 Project Structure
 
@@ -63,6 +70,7 @@ flowise-playground/
 ├── .env.example          # Environment variables template
 ├── docs/
 │   ├── architecture.md   # System architecture overview
+│   ├── local-models.md   # Local Ollama usage and model comparison notes
 │   ├── usage.md          # Detailed usage instructions
 │   └── sample-flows.md   # Example workflow descriptions
 └── README.md             # This file
@@ -72,11 +80,22 @@ flowise-playground/
 
 | Command | Description |
 |---------|-------------|
-| `docker compose up -d` | Start Flowise |
-| `docker compose --profile qdrant up -d` | Start Flowise + Qdrant |
+| `docker compose up -d` | Start the default full stack |
 | `docker compose down` | Stop all services |
 | `docker compose logs -f` | View logs |
 | `docker compose pull` | Update to latest images |
+| Edit `COMPOSE_PROFILES` in `.env` | Change which services start by default |
+
+## 🤖 Local Models
+
+See [Local Models and Comparison](docs/local-models.md) for:
+
+- how the Ollama service starts in this project
+- how to auto-pull local models
+- how to connect Flowise to Ollama
+- the current MCP tool-calling comparison notes
+
+If you need explicit profile-based startup commands, see [docs/usage.md](docs/usage.md).
 
 ## 🤝 Contributing
 

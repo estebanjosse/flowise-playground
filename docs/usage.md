@@ -13,41 +13,62 @@ Before you begin, ensure you have:
 
 ## Starting the Environment
 
-### Basic Setup (Flowise Only)
+### Basic Setup
 
 1. **Copy the environment file:**
    ```bash
    cp .env.example .env
    ```
 
-2. **Start Flowise:**
+2. **Start the full stack:**
    ```bash
    docker compose up -d
    ```
 
+   By default, `.env.example` sets `COMPOSE_PROFILES=flowise,qdrant,ollama`, so this command starts the full stack. To start fewer services, edit `COMPOSE_PROFILES` in your `.env` file.
+
 3. **Access Flowise UI:**
    Open your browser and navigate to [http://localhost:3000](http://localhost:3000)
 
-### With Qdrant (Vector Database)
+### Included by Default
 
-For RAG workflows that require vector storage:
+With the default `.env` configuration, `docker compose up -d` starts:
 
-```bash
-docker compose --profile qdrant up -d
+- **Flowise** on `http://localhost:3000`
+- **Qdrant** on `localhost:6333`
+- **Ollama** on `http://localhost:11434`
+
+### Customizing the Default Startup Set
+
+Use `COMPOSE_PROFILES` in your `.env` file to control the default startup set.
+
+Example values:
+
+```env
+COMPOSE_PROFILES=flowise
+COMPOSE_PROFILES=flowise,qdrant
+COMPOSE_PROFILES=flowise,ollama
+COMPOSE_PROFILES=flowise,qdrant,ollama
 ```
 
-This starts both Flowise and Qdrant.
+After updating `.env`, run:
+
+```bash
+docker compose up -d
+```
+
+If you need explicit profile-based startup for a one-off run, you can still use `docker compose --profile ... up -d`, but the default workflow in this repository is to manage startup through `COMPOSE_PROFILES`.
 
 ## Stopping the Environment
 
 ### Stop all services:
 ```bash
-docker compose --profile qdrant down
+docker compose down
 ```
 
 ### Stop and remove volumes (⚠️ deletes all data):
 ```bash
-docker compose --profile qdrant down -v
+docker compose down -v
 ```
 
 ## Viewing Logs
@@ -61,6 +82,7 @@ docker compose logs -f
 ```bash
 docker compose logs -f flowise
 docker compose logs -f qdrant
+docker compose logs -f ollama
 ```
 
 ## Configuration
@@ -120,7 +142,7 @@ Pull the latest images and restart:
 
 ```bash
 docker compose pull
-docker compose --profile qdrant up -d
+docker compose up -d
 ```
 
 ### Checking Service Health
@@ -130,6 +152,8 @@ docker compose ps
 ```
 
 Healthy services show `(healthy)` in the STATUS column.
+
+With the default full stack, you should typically see `flowise`, `qdrant`, and `ollama`.
 
 ### Debugging Issues
 
@@ -195,6 +219,24 @@ Common issues:
 Ensure Qdrant is running and use the correct hostname:
 - **Inside Docker:** Use `qdrant` as the host
 - **Outside Docker:** Use `localhost` with the mapped port
+
+### Ollama Not Available
+
+If Flowise cannot reach Ollama:
+
+1. Confirm the service is running:
+   ```bash
+   docker compose ps
+   ```
+
+2. Check the Ollama logs:
+   ```bash
+   docker compose logs ollama --tail 100
+   ```
+
+3. Verify that `ollama` is included in `COMPOSE_PROFILES` inside your `.env` file
+
+4. In Flowise, use `http://ollama:11434` as the Ollama base URL
 
 ## Next Steps
 

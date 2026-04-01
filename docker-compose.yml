@@ -12,6 +12,7 @@ services:
       - LOG_LEVEL=${LOG_LEVEL:-info}
       - NODE_TLS_REJECT_UNAUTHORIZED=0
       - SHOW_COMMUNITY_NODES=true
+      - HTTP_SECURITY_CHECK=false
     volumes:
       - flowise_data:/root/.flowise
     networks:
@@ -68,6 +69,26 @@ services:
       timeout: 10s
       retries: 5
       start_period: 30s
+
+  mcp-server:
+    image: ghcr.io/estebanjosse/mcp-server-template:latest
+    container_name: mcp-server
+    profiles:
+      - mcp-server
+    networks:
+      - flowise-network
+    ports:
+      - "5000:5000"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      MCP_METRICS_ENABLED: "true"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
 
   phoenix:
     image: arizephoenix/phoenix:13.20.0 

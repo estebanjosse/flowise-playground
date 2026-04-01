@@ -38,6 +38,20 @@ With the default `.env` configuration, `docker compose up -d` starts:
 - **Qdrant** on `localhost:6333`
 - **Ollama** on `http://localhost:11434`
 
+### Optional: Phoenix Observability
+
+Phoenix is an optional local observability UI for traces and evaluations. In this project it is included because it is simple to self-host and gives a quick way to inspect what your flows are doing.
+
+Start it when needed:
+
+```bash
+docker compose --profile phoenix up -d
+```
+
+Then open:
+
+- **Phoenix** on `http://localhost:6006`
+
 ### Customizing the Default Startup Set
 
 Use `COMPOSE_PROFILES` in your `.env` file to control the default startup set.
@@ -49,6 +63,7 @@ COMPOSE_PROFILES=flowise
 COMPOSE_PROFILES=flowise,qdrant
 COMPOSE_PROFILES=flowise,ollama
 COMPOSE_PROFILES=flowise,qdrant,ollama
+COMPOSE_PROFILES=flowise,qdrant,ollama,phoenix
 ```
 
 After updating `.env`, run:
@@ -83,6 +98,7 @@ docker compose logs -f
 docker compose logs -f flowise
 docker compose logs -f qdrant
 docker compose logs -f ollama
+docker compose logs -f phoenix
 ```
 
 ## Configuration
@@ -154,6 +170,8 @@ docker compose ps
 Healthy services show `(healthy)` in the STATUS column.
 
 With the default full stack, you should typically see `flowise`, `qdrant`, and `ollama`.
+
+If `phoenix` is enabled, it should also appear in the list.
 
 ### Debugging Issues
 

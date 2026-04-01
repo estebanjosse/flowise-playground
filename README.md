@@ -5,7 +5,7 @@ Flowise Playground provides a ready-to-use Docker Compose environment for [Flowi
 ## ✨ Features
 
 - 🐳 **One-command setup** — Get FlowiseAI running in seconds
-- 🔌 **Optional dependencies** — Includes Qdrant vector database for RAG workflows
+- 🔌 **Optional dependencies** — Includes Qdrant for RAG workflows and Phoenix for local observability
 - 📚 **Fully documented** — Clear guides and architecture documentation
 
 ## 🚀 Quick Start
@@ -47,11 +47,23 @@ The default stack started by `docker compose up -d` includes:
 - **Qdrant** on `localhost:6333` for RAG workflows
 - **Ollama** on `http://localhost:11434` for local models
 
+Optional profiles also include:
+
+- **Phoenix** on `http://localhost:6006` for local traces and observability during flow testing
+
+Phoenix was chosen here because it is simple to self-host in Docker and useful when you want quick visibility into requests, spans, and evaluations without adding a heavier stack.
+
 Qdrant will be available at `localhost:6333`. When configuring Qdrant in Flowise, use:
 - **Host:** `qdrant`
 - **Port:** `6333`
 
 If you want a smaller default startup set, edit `COMPOSE_PROFILES` in your `.env` file.
+
+To start Phoenix for a one-off run:
+
+```bash
+docker compose --profile phoenix up -d
+```
 
 ## 📖 Documentation
 

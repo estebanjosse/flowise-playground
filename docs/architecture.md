@@ -79,6 +79,18 @@ When configuring a Qdrant node in Flowise, use:
 - **Host:** `qdrant` (the container name)
 - **Port:** `6333`
 
+### Phoenix
+
+**Container:** `phoenix`  
+**Image:** `arizephoenix/phoenix:13.20.0`  
+**Ports:** 6006 (UI), 4317 (OTLP gRPC), 9090 (Prometheus, optional)  
+**Profile:** `phoenix`
+
+Phoenix adds lightweight local observability for traces and evaluations. It is a good fit for this repository because it is simple to self-host with Docker and easy to start only when needed.
+
+**Data Persistence:**
+- Phoenix data is stored in the `phoenix_data` volume at `/mnt/data`
+
 ## Network Architecture
 
 All services communicate over a dedicated Docker bridge network called `flowise-network`. This provides:
@@ -93,6 +105,7 @@ All services communicate over a dedicated Docker bridge network called `flowise-
 |--------|---------|-------------|
 | `flowise_data` | Flowise configuration, flows, and credentials | `/root/.flowise` |
 | `qdrant_data` | Qdrant vector storage | `/qdrant/storage` |
+| `phoenix_data` | Phoenix local traces and metadata | `/mnt/data` |
 
 **Backup Recommendation:**
 Regularly backup these volumes to prevent data loss:
@@ -113,6 +126,7 @@ All services include health checks to ensure reliability:
 |---------|--------------|----------|
 | Flowise | HTTP GET on port 3000 | 30s |
 | Qdrant | HTTP GET on `/readyz` | 30s |
+| Ollama | `ollama list` | 30s |
 
 ## Extending the Setup
 

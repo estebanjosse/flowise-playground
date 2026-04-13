@@ -9,6 +9,7 @@ cleanup() {
 }
 trap cleanup INT TERM
 
+# Wait until the daemon can answer CLI requests before pulling models.
 until /bin/ollama list >/dev/null 2>&1; do
   sleep 1
 done

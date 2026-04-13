@@ -33,12 +33,6 @@ To run Flowise and Ollama together explicitly:
 docker compose --profile flowise --profile ollama up -d
 ```
 
-To run Flowise, Ollama, and Qdrant together explicitly:
-
-```bash
-docker compose --profile flowise --profile ollama --profile qdrant up -d
-```
-
 ### Service Behavior
 
 The `ollama` container uses the script [scripts/ollama-entrypoint.sh](../scripts/ollama-entrypoint.sh). On startup, it:
